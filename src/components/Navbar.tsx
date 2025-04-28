@@ -1,104 +1,44 @@
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import ThemeToggle from './ThemeToggle';
-import { Menu, X } from 'lucide-react';
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { filters } from '@/data';
+import cn from 'classnames';
 
-export default function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+interface NavbarProps {
+  onFilterChange?: (filter: string) => void;
+}
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const offset = window.scrollY;
-      setScrolled(offset > 10);
-    };
+const Navbar = ({ onFilterChange }: NavbarProps) => {
+  const [activeFilter, setActiveFilter] = useState(filters[0]);
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const closeMenu = () => setIsMenuOpen(false);
-
-  const navigationLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Contact', href: '#contact' },
-  ];
+  const handleFilterClick = (filter: string) => {
+    setActiveFilter(filter);
+    if (onFilterChange) {
+      onFilterChange(filter);
+    }
+  };
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-background/80 backdrop-blur-md shadow-sm' : 'bg-transparent'
-      }`}
-    >
-      <nav className="container mx-auto px-6 py-4 flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center">
-          <span className="text-xl font-bold text-primary">Portfolio</span>
-        </Link>
-
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-8">
-          {navigationLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className="text-foreground hover:text-primary transition-colors font-medium"
-              onClick={(e) => {
-                e.preventDefault();
-                document.querySelector(link.href)?.scrollIntoView({
-                  behavior: 'smooth',
-                });
-              }}
-            >
-              {link.name}
-            </a>
-          ))}
-        </div>
-
-        {/* Theme Toggle and Mobile Menu Button */}
-        <div className="flex items-center space-x-4">
-          <ThemeToggle />
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={toggleMenu}
-            aria-label="Toggle menu"
+    <div className="flex justify-center w-full mb-8">
+      <div className="bg-[#1c1c1e]/70 backdrop-blur-sm rounded-full p-1 flex gap-1 shadow-lg">
+        {filters.map((filter) => (
+          <button
+            key={filter}
+            onClick={() => handleFilterClick(filter)}
+            className={cn(
+              'px-6 py-2 rounded-full text-sm font-medium transition-all duration-300',
+              {
+                'bg-[#2c2c2e] text-white': activeFilter === filter,
+                'text-white/70 hover:text-white hover:bg-[#2c2c2e]/50': activeFilter !== filter,
+              }
+            )}
           >
-            {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </Button>
-        </div>
-      </nav>
-
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-16 bg-background z-40 animate-fade-in">
-          <div className="flex flex-col items-center justify-center h-full space-y-6 text-lg">
-            {navigationLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="text-foreground hover:text-primary transition-colors font-medium"
-                onClick={(e) => {
-                  e.preventDefault();
-                  closeMenu();
-                  document.querySelector(link.href)?.scrollIntoView({
-                    behavior: 'smooth',
-                  });
-                }}
-              >
-                {link.name}
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
-    </header>
+            {filter}
+          </button>
+        ))}
+      </div>
+    </div>
   );
-}
+};
+
+export default Navbar; 
