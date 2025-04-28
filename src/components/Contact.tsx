@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, Send, GitHub, Linkedin } from 'lucide-react';
+import { Mail, Phone, Send, Github, Linkedin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
@@ -169,7 +168,7 @@ export default function Contact() {
                     rel="noopener noreferrer"
                     className="p-3 bg-secondary rounded-full hover:bg-primary/10 transition-colors"
                   >
-                    <GitHub className="h-5 w-5" />
+                    <Github className="h-5 w-5" />
                   </a>
                   <a 
                     href="https://linkedin.com/in/yourusername" 
